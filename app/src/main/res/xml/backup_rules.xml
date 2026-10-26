@@ -5,6 +5,7 @@
     
     <!-- Exclude sensitive data -->
     <exclude domain="sharedpref" path="phones" />
+    <exclude domain="sharedpref" path="callbackly_pairing.xml" />
     
     <!-- Include only necessary files -->
     <include domain="file" path="config/" />

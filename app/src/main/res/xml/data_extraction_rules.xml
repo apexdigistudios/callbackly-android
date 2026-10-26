@@ -6,6 +6,7 @@
         
         <!-- Exclude sensitive data -->
         <exclude domain="sharedpref" path="phones" />
+        <exclude domain="sharedpref" path="callbackly_pairing.xml" />
     </cloud-backup>
     
     <device-transfer>
@@ -14,5 +15,6 @@
         
         <!-- Exclude sensitive data from device transfer -->
         <exclude domain="sharedpref" path="phones" />
+        <exclude domain="sharedpref" path="callbackly_pairing.xml" />
     </device-transfer>
 </data-extraction-rules> 

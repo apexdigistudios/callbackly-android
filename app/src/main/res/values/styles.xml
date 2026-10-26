@@ -54,6 +54,23 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
     </style>
 
+    <style name="AppTheme.Callbackly" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/callbackly_accent</item>
+        <item name="colorOnPrimary">@color/callbackly_background</item>
+        <item name="colorSecondary">@color/callbackly_accent</item>
+        <item name="colorOnSecondary">@color/callbackly_background</item>
+        <item name="colorSurface">@color/callbackly_surface</item>
+        <item name="colorOnSurface">@color/callbackly_text</item>
+        <item name="colorSurfaceVariant">@color/callbackly_surface_elevated</item>
+        <item name="colorOnSurfaceVariant">@color/callbackly_muted</item>
+        <item name="colorError">@color/callbackly_error</item>
+        <item name="android:colorBackground">@color/callbackly_background</item>
+        <item name="android:statusBarColor">@color/callbackly_background</item>
+        <item name="android:navigationBarColor">@color/callbackly_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorControlActivated">@color/callbackly_accent</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

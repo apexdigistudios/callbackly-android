@@ -1,299 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="?attr/colorSurface"
+    android:background="@color/callbackly_background"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        app:liftOnScroll="true"
-        app:elevation="0dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            app:title=""
-            app:titleTextAppearance="@style/TextAppearance.App.TitleLarge"
-            app:titleMarginStart="4dp"
-            app:menu="@menu/action_bar_menu"
-            android:elevation="0dp" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingHorizontal="24dp">
+            android:paddingStart="28dp"
+            android:paddingTop="36dp"
+            android:paddingEnd="28dp"
+            android:paddingBottom="32dp">
 
-            <!-- Modern Header Card with Gradient-like Effect -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/header_card"
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:contentDescription="@string/brand_wordmark"
+                android:src="@mipmap/ic_launcher"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="?attr/colorPrimaryContainer"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="3dp"
-                app:strokeWidth="0dp">
+                android:layout_marginTop="14dp"
+                android:text="@string/brand_wordmark"
+                android:textColor="@color/callbackly_accent"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.04" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp">
-
-                    <!-- Header with Icon -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            app:cardBackgroundColor="?attr/colorPrimary"
-                            app:cardCornerRadius="16dp"
-                            app:cardElevation="0dp">
-
-                            <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_sms"
-                                android:tint="?attr/colorOnPrimary" />
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:letterSpacing="0"
-                                android:text="Service status"
-                                android:textAppearance="@style/TextAppearance.App.HeadlineSmall"
-                                android:textColor="?attr/colorOnPrimaryContainer" />
-
-                            <TextView
-                                android:id="@+id/info_notice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Active and forwarding messages"
-                                android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                                android:textColor="?attr/colorOnPrimaryContainer"
-                                android:alpha="0.8" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Status Chips with Modern Design -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="start">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_status"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Service Active"
-                            app:chipIcon="@drawable/ic_check_circle"
-                            app:chipBackgroundColor="?attr/colorTertiaryContainer"
-                            app:chipIconTint="?attr/colorOnTertiaryContainer"
-                            app:chipStrokeWidth="0dp"
-                            app:chipCornerRadius="12dp"
-                            android:textColor="?attr/colorOnTertiaryContainer"
-                            style="@style/Widget.Material3.Chip.Assist" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="0 Rules"
-                            app:chipBackgroundColor="?attr/colorSecondaryContainer"
-                            app:chipStrokeWidth="0dp"
-                            app:chipCornerRadius="12dp"
-                            android:textColor="?attr/colorOnSecondaryContainer"
-                            style="@style/Widget.Material3.Chip.Assist" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Activity Type Filter -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chip_group_filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="4dp"
-                    app:singleSelection="true"
-                    app:selectionRequired="true"
-                    app:chipSpacingHorizontal="8dp">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_filter_all"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="All"
-                        android:checked="true"
-                        style="@style/Widget.Material3.Chip.Filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_filter_sms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SMS"
-                        app:chipIcon="@drawable/ic_sms"
-                        style="@style/Widget.Material3.Chip.Filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_filter_push"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Push"
-                        app:chipIcon="@drawable/ic_notifications"
-                        style="@style/Widget.Material3.Chip.Filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_filter_calls"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Calls"
-                        app:chipIcon="@drawable/ic_call"
-                        style="@style/Widget.Material3.Chip.Filter" />
-
-                </com.google.android.material.chip.ChipGroup>
-
-            </LinearLayout>
-
-            <!-- List Container with Modern Styling -->
             <FrameLayout
+                android:id="@+id/pairing_panel"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="400dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="42dp">
 
-                <!-- RecyclerView for rules -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:paddingBottom="100dp"
-                    android:scrollbars="none"
-                    android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/list_item" />
-
-                <!-- Modern Empty State -->
                 <LinearLayout
-                    android:id="@+id/empty_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical"
-                    android:padding="40dp"
-                    android:visibility="gone">
-
-                    <!-- Modern Empty State Icon -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_gravity="center_horizontal"
-                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                        app:cardCornerRadius="60dp"
-                        app:cardElevation="1dp"
-                        app:strokeWidth="0dp">
-
-                        <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_empty_state"
-                            android:tint="?attr/colorOnSurfaceVariant"
-                            android:alpha="0.6" />
-
-                    </com.google.android.material.card.MaterialCardView>
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="24dp"
-                        android:text="No forwarding rules yet"
-                        android:textAppearance="@style/TextAppearance.App.TitleLarge"
-                        android:textColor="?attr/colorOnSurface"
-                        android:letterSpacing="0" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        android:text="Create your first rule to start forwarding your activities to webhooks"
-                        android:textAppearance="@style/TextAppearance.App.BodyLarge"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textAlignment="center"
+                        android:text="@string/onboarding_title"
+                        android:textColor="@color/callbackly_text"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
                         android:lineSpacingExtra="2dp" />
 
-                </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/onboarding_description"
+                        android:textColor="@color/callbackly_muted"
+                        android:textSize="16sp"
+                        android:lineSpacingExtra="4dp" />
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:hint="@string/pairing_code_label"
+                        app:boxBackgroundColor="@color/callbackly_surface"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="14dp"
+                        app:boxCornerRadiusBottomStart="14dp"
+                        app:boxCornerRadiusTopEnd="14dp"
+                        app:boxCornerRadiusTopStart="14dp"
+                        app:boxStrokeColor="@color/callbackly_accent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/pairing_code_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapCharacters|textNoSuggestions"
+                            android:maxLines="1"
+                            android:imeOptions="actionDone"
+                            android:hint="@string/pairing_code_hint"
+                            android:textColor="@color/callbackly_text"
+                            android:textColorHint="@color/callbackly_muted"
+                            android:paddingTop="18dp"
+                            android:paddingBottom="18dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/pairing_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/callbackly_error"
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        tools:text="@string/pairing_error_server"
+                        tools:visibility="visible" />
+
+                    <ProgressBar
+                        android:id="@+id/pairing_progress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="16dp"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@color/callbackly_accent"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/connect_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/connect_business"
+                        android:textAllCaps="false"
+                        android:textColor="@color/callbackly_background"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/callbackly_accent"
+                        app:cornerRadius="16dp" />
+
+                </LinearLayout>
             </FrameLayout>
 
+            <LinearLayout
+                android:id="@+id/connected_panel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/callbackly_status_card"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:id="@+id/status_indicator"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/status_indicator_connected" />
+
+                <TextView
+                    android:id="@+id/status_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:text="@string/connected_status"
+                    android:textColor="@color/callbackly_text"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:text="Device Connected &amp; Monitoring Calls" />
+
+                <TextView
+                    android:id="@+id/status_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/connected_description"
+                    android:textColor="@color/callbackly_muted"
+                    android:textSize="15sp"
+                    android:lineSpacingExtra="3dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/permission_button"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/grant_call_access"
+                    android:textAllCaps="false"
+                    android:textColor="@color/callbackly_accent"
+                    android:visibility="gone"
+                    app:cornerRadius="14dp"
+                    app:strokeColor="@color/callbackly_accent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/disconnect_button"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/disconnect_repair"
+                    android:textAllCaps="false"
+                    android:textColor="@color/callbackly_muted"
+                    app:cornerRadius="14dp" />
+
+            </LinearLayout>
         </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- Modern Extended FAB -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/btn_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="20dp"
-        android:text="Add Rule"
-        android:textAppearance="@style/TextAppearance.App.LabelLarge"
-        app:icon="@drawable/ic_add"
-        app:iconSize="24dp"
-        app:cornerRadius="28dp"
-        app:elevation="6dp"
-        app:hoveredFocusedTranslationZ="8dp"
-        app:pressedTranslationZ="12dp" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </ScrollView>
+</FrameLayout>

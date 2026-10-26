@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="callbackly_background">#111214</color>
+    <color name="callbackly_surface">#1A1B1D</color>
+    <color name="callbackly_surface_elevated">#222326</color>
+    <color name="callbackly_accent">#F5C62E</color>
+    <color name="callbackly_text">#F5F1E8</color>
+    <color name="callbackly_muted">#AAA69D</color>
+    <color name="callbackly_green">#53C77A</color>
+    <color name="callbackly_error">#FF8A80</color>
     <!-- Modern Harmonious Blue Color Scheme - Ocean & Sky Inspired -->
     
     <!-- Primary Colors - Deep Ocean Blue -->

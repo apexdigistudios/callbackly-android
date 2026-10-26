@@ -21,7 +21,7 @@ public class SmsReceiverService extends Service {
 
     private static final String TAG = "SmsReceiverService";
     private static final String CHANNEL_ID = "SmsGatewayService";
-    private static final String CHANNEL_NAME = "SMS Gateway Service";
+    private static final String CHANNEL_NAME = "CallBackly Background Service";
     private static final int NOTIFICATION_ID = 1001;
     private static final String PREFS_NAME = "service_state";
     private static final String KEY_SERVICE_RUNNING = "service_running";
@@ -55,9 +55,6 @@ public class SmsReceiverService extends Service {
 
         // Update service state
         updateServiceState(true);
-
-        // Trigger auto-start webhook
-        triggerAutoStartWebhook();
 
         Log.d(TAG, "Service created and started in foreground");
     }
@@ -114,6 +111,10 @@ public class SmsReceiverService extends Service {
         super.onTaskRemoved(rootIntent);
 
         // Restart service when task is removed (swipe away from recent apps)
+        if (!isBusinessPaired()) {
+            return;
+        }
+
         Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
 
@@ -141,7 +142,7 @@ public class SmsReceiverService extends Service {
                     NotificationManager.IMPORTANCE_LOW // Low importance to minimize user distraction
             );
 
-            channel.setDescription("Keeps SMS Gateway running in background to monitor messages");
+            channel.setDescription(getString(R.string.service_active_notification_description));
             channel.setShowBadge(false);
             channel.setSound(null, null);
             channel.enableVibration(false);
@@ -231,13 +232,9 @@ public class SmsReceiverService extends Service {
                 notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Get service statistics
-        int startCount = servicePrefs.getInt(KEY_START_COUNT, 0);
-        String statusText = "Active • Started " + startCount + " times";
-
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("SMS Gateway Active")
-                .setContentText(statusText)
+                .setContentTitle(getString(R.string.service_active_notification))
+                .setContentText(getString(R.string.service_active_notification_description))
                 .setSmallIcon(R.drawable.ic_f)
                 .setColor(getColor(R.color.colorPrimary))
                 .setContentIntent(pendingIntent)
@@ -278,18 +275,13 @@ public class SmsReceiverService extends Service {
         return prefs.getInt(KEY_START_COUNT, 0);
     }
 
-    /**
-     * Triggers webhook for auto-start event
-     */
-    private void triggerAutoStartWebhook() {
-        // Check if auto-start webhook is enabled
-        if (AppWebhooksActivity.isAutoStartWebhookEnabled(this)) {
-            String url = AppWebhooksActivity.getAutoStartWebhookUrl(this);
-            if (!url.isEmpty()) {
-                WebhookPayload payload = WebhookSender.createAppStartPayload(this, false);
-                WebhookSender.sendWebhook(this, url, payload);
-                Log.d(TAG, "Auto-start webhook triggered");
-            }
+    private boolean isBusinessPaired() {
+        try {
+            return !android.text.TextUtils.isEmpty(
+                    PairingStore.getPreferences(this).getString(PairingStore.KEY_BUSINESS_ID, null));
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to verify pairing before restarting background service", e);
+            return false;
         }
     }
 }

@@ -14,7 +14,12 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent argIntent) {
-        Log.d(TAG, "Boot completed - starting SMS Gateway service");
+        if (!isBusinessPaired(context)) {
+            Log.d(TAG, "No paired business; skipping background service startup");
+            return;
+        }
+
+        Log.d(TAG, "Boot completed - starting CallBackly background service");
 
         try {
             Intent intent = new Intent(context, SmsReceiverService.class);
@@ -28,6 +33,16 @@ public class BootCompletedReceiver extends BroadcastReceiver {
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to start service on boot", e);
+        }
+    }
+
+    private boolean isBusinessPaired(Context context) {
+        try {
+            return !android.text.TextUtils.isEmpty(
+                    PairingStore.getPreferences(context).getString(PairingStore.KEY_BUSINESS_ID, null));
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to verify pairing on boot", e);
+            return false;
         }
     }
 }

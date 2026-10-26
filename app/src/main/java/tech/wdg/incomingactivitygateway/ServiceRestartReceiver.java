@@ -32,6 +32,12 @@ public class ServiceRestartReceiver extends BroadcastReceiver {
 
     private void restartService(Context context) {
         try {
+            if (android.text.TextUtils.isEmpty(
+                    PairingStore.getPreferences(context).getString(PairingStore.KEY_BUSINESS_ID, null))) {
+                Log.d(TAG, "No paired business - skipping service restart");
+                return;
+            }
+
             // Only restart if service was expected to be running
             if (SmsReceiverService.isServiceExpectedToRun(context)) {
                 Log.d(TAG, "Restarting SMS Gateway service");
