@@ -65,6 +65,17 @@
         </service>
 
         <service
+            android:name=".CallForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:stopWithTask="false">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Ongoing phone-state monitoring for missed-call delivery" />
+        </service>
+
+        <service
             android:name=".NotificationListenerService"
             android:enabled="true"
             android:exported="true"

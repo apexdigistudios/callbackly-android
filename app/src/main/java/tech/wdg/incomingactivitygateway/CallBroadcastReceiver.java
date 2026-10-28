@@ -1,13 +1,16 @@
 package tech.wdg.incomingactivitygateway;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
 import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
 import androidx.work.Data;
@@ -33,6 +36,15 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
             return;
         }
 
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
+                        != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)
+                        != PackageManager.PERMISSION_GRANTED) {
+            AppLogger.getInstance().error(
+                    "Call logging blocked: Required Phone or Call Log permissions are disabled.");
+            return;
+        }
+
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
@@ -40,6 +52,8 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
             long startedAt = preferences.getLong(KEY_CALL_STARTED_AT, 0L);
             if (!preferences.getBoolean(KEY_CALL_ACTIVE, false) || startedAt == 0L) {
                 String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                AppLogger.getInstance().info("Incoming call detected: "
+                        + (TextUtils.isEmpty(phoneNumber) ? "number unavailable" : phoneNumber));
                 preferences.edit()
                         .putBoolean(KEY_CALL_ACTIVE, true)
                         .putBoolean(KEY_CALL_ANSWERED, false)
@@ -49,6 +63,7 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state)) {
             if (preferences.getBoolean(KEY_CALL_ACTIVE, false)) {
+                AppLogger.getInstance().info("Incoming call was answered");
                 preferences.edit().putBoolean(KEY_CALL_ANSWERED, true).apply();
             }
         } else if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
@@ -72,9 +87,13 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
                 .apply();
 
         if (answered || startedAt == 0L) {
+            if (answered) {
+                AppLogger.getInstance().info("Answered call ended; no missed-call webhook needed");
+            }
             return;
         }
 
+        AppLogger.getInstance().info("Missed call detected; scheduling webhook delivery");
         Data inputData = new Data.Builder()
                 .putLong(KEY_CALL_STARTED_AT, startedAt)
                 .putString(KEY_PHONE_NUMBER, phoneNumber)
@@ -96,6 +115,7 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
                     request);
         } catch (IllegalStateException e) {
             Log.e(TAG, "Unable to schedule missed-call delivery", e);
+            AppLogger.getInstance().error("Could not schedule missed-call delivery: " + e.getMessage());
         }
     }
 }

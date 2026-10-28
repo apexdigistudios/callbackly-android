@@ -22,6 +22,13 @@
     <string name="service_start_error">Call monitoring could not be started. Reopen the app to try again.</string>
     <string name="service_active_notification">CallBackly Background Service Active</string>
     <string name="service_active_notification_description">Monitoring this device for missed calls</string>
+    <string name="call_service_channel">Call monitoring</string>
+    <string name="call_service_notification">Callbackly Gateway: Active &amp; Listening for Calls</string>
+    <string name="call_service_notification_description">Watching for missed calls and sending them securely</string>
+    <string name="log_title">Activity log</string>
+    <string name="log_description">Recent call events and webhook delivery status</string>
+    <string name="log_empty">No activity yet. Incoming call and delivery updates will appear here.</string>
+    <string name="clear_logs">Clear logs</string>
     <string name="brand_wordmark">CallBackly</string>
     <string name="permission_needed">Set permission to access SMS to use this app.</string>
     <string name="input_phone">66123456789</string>

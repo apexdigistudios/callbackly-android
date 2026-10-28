@@ -43,19 +43,20 @@ public final class CallbacklyApi {
         }
     }
 
-    public static void sendMissedCall(String phoneNumber, String contactName, String businessId)
+    public static int sendMissedCall(String phoneNumber, String contactName, String deviceId)
             throws IOException, JSONException {
         JSONObject payload = new JSONObject();
+        payload.put("device_id", deviceId);
         payload.put("phone_number", phoneNumber);
         payload.put("contact_name", contactName == null ? "" : contactName);
-        payload.put("business_id", businessId);
 
         HttpURLConnection connection = post("/api/android/calls", payload);
         try {
             int responseCode = connection.getResponseCode();
             if (responseCode < 200 || responseCode >= 300) {
-                throw new IOException("Missed-call request failed with HTTP " + responseCode);
+                throw new HttpResponseException(responseCode);
             }
+            return responseCode;
         } finally {
             connection.disconnect();
         }
@@ -97,6 +98,19 @@ public final class CallbacklyApi {
 
         PairingRejectedException(int statusCode) {
             super("Pairing request failed with HTTP " + statusCode);
+            this.statusCode = statusCode;
+        }
+
+        public int getStatusCode() {
+            return statusCode;
+        }
+    }
+
+    public static final class HttpResponseException extends IOException {
+        private final int statusCode;
+
+        HttpResponseException(int statusCode) {
+            super("Missed-call request failed with HTTP " + statusCode);
             this.statusCode = statusCode;
         }
 

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,8 +51,26 @@ public class MainActivity extends AppCompatActivity {
     private View statusIndicator;
     private TextView statusTitle;
     private TextView statusDescription;
+    private TextView logEntries;
+    private ScrollView logScroll;
+    private MaterialButton clearLogsButton;
     private SharedPreferences pairingPreferences;
     private boolean destroyed;
+    private final AppLogger.Listener appLogListener = new AppLogger.Listener() {
+        @Override
+        public void onLogAdded(AppLogger.LogEntry entry) {
+            if (!destroyed) {
+                renderLogs();
+            }
+        }
+
+        @Override
+        public void onLogsCleared() {
+            if (!destroyed) {
+                renderLogs();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +87,14 @@ public class MainActivity extends AppCompatActivity {
         statusIndicator = findViewById(R.id.status_indicator);
         statusTitle = findViewById(R.id.status_title);
         statusDescription = findViewById(R.id.status_description);
+        logEntries = findViewById(R.id.log_entries);
+        logScroll = findViewById(R.id.log_scroll);
+        clearLogsButton = findViewById(R.id.clear_logs_button);
 
         connectButton.setOnClickListener(view -> pairBusiness());
         findViewById(R.id.disconnect_button).setOnClickListener(view -> disconnectBusiness());
         permissionButton.setOnClickListener(view -> requestCallPermissions());
+        clearLogsButton.setOnClickListener(view -> AppLogger.getInstance().clear());
 
         try {
             pairingPreferences = PairingStore.getPreferences(this);
@@ -89,6 +112,38 @@ public class MainActivity extends AppCompatActivity {
         if (!hasCallPermissions()) {
             requestCallPermissions();
         }
+        renderLogs();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AppLogger.getInstance().addListener(appLogListener);
+        renderLogs();
+    }
+
+    @Override
+    protected void onStop() {
+        AppLogger.getInstance().removeListener(appLogListener);
+        super.onStop();
+    }
+
+    private void renderLogs() {
+        if (logEntries == null || logScroll == null) {
+            return;
+        }
+        StringBuilder text = new StringBuilder();
+        for (AppLogger.LogEntry entry : AppLogger.getInstance().getRecentLogs()) {
+            if (text.length() > 0) {
+                text.append('\n');
+            }
+            text.append(entry.getFormattedMessage());
+        }
+        if (text.length() == 0) {
+            text.append(getString(R.string.log_empty));
+        }
+        logEntries.setText(text);
+        logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
     }
 
     private void pairBusiness() {
@@ -223,8 +278,15 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, SmsReceiverService.class);
         try {
             ContextCompat.startForegroundService(this, serviceIntent);
+            ContextCompat.startForegroundService(
+                    this,
+                    new Intent(this, CallForegroundService.class));
+            AppLogger.getInstance().success("Call monitoring is active");
+            AppLogger.getInstance().success("Background call-monitoring notification started");
         } catch (RuntimeException e) {
             Log.e(TAG, "Unable to start the CallBackly background service", e);
+            AppLogger.getInstance().error("Unable to start a background monitoring service: "
+                    + e.getMessage());
             statusDescription.setText(R.string.service_start_error);
         }
     }
@@ -235,6 +297,8 @@ public class MainActivity extends AppCompatActivity {
                     .remove(PairingStore.KEY_BUSINESS_ID)
                     .apply();
             stopService(new Intent(this, SmsReceiverService.class));
+            stopService(new Intent(this, CallForegroundService.class));
+            AppLogger.getInstance().info("Device disconnected from the business");
             showPairingState();
             pairingCodeInput.setText("");
             errorText.setVisibility(View.GONE);
