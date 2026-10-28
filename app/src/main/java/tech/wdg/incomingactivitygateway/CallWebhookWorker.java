@@ -37,6 +37,8 @@ public class CallWebhookWorker extends Worker {
     private static final String LEAD_NOTIFICATION_CHANNEL_ID = "missed_call_leads";
     private static final String KEY_CALL_STARTED_AT = "call_started_at";
     private static final String KEY_PHONE_NUMBER = "phone_number";
+    private static final int CALL_LOG_LOOKUP_ATTEMPTS = 3;
+    private static final long CALL_LOG_RETRY_DELAY_MS = 1000L;
 
     public CallWebhookWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -79,13 +81,35 @@ public class CallWebhookWorker extends Worker {
                 return Result.failure();
             }
 
-            MissedCall missedCall = findMissedCall(
-                    callStartedAt,
-                    getInputData().getString(KEY_PHONE_NUMBER));
+            String reportedNumber = getInputData().getString(KEY_PHONE_NUMBER);
+            MissedCall missedCall = null;
+            for (int attempt = 1; attempt <= CALL_LOG_LOOKUP_ATTEMPTS; attempt++) {
+                missedCall = findMissedCall(callStartedAt, reportedNumber);
+                if (missedCall != null) {
+                    break;
+                }
+
+                if (attempt < CALL_LOG_LOOKUP_ATTEMPTS) {
+                    logger.info("Checking for the missed call. Please wait...");
+                    try {
+                        Thread.sleep(CALL_LOG_RETRY_DELAY_MS);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        logger.info("We'll check for the missed call again shortly.");
+                        return Result.retry();
+                    }
+                }
+            }
+
             if (missedCall == null) {
-                Log.w(TAG, "No matching missed call is present in the call log yet");
-                logger.info("The missed call isn't ready yet. We'll check again shortly.");
-                return Result.retry();
+                if (TextUtils.isEmpty(reportedNumber)) {
+                    Log.w(TAG, "No matching missed call is present in the call log");
+                    logger.error("We couldn't find the missed call. We'll try again shortly.");
+                    return Result.retry();
+                }
+                Log.i(TAG, "Call log was not ready; using the number captured when the phone rang");
+                logger.info("Using the number captured when the phone rang.");
+                missedCall = new MissedCall(reportedNumber);
             }
 
             String contactName = getContactName(missedCall.phoneNumber);
