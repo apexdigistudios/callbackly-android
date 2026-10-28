@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 public final class CallbacklyApi {
 
-    public static final String BASE_URL = "https://callbackly.online";
+    public static final String BASE_URL = "https://bcall.vercel.app";
 
     private CallbacklyApi() {
     }
