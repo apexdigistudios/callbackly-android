@@ -77,14 +77,17 @@ public class MainActivity extends AppCompatActivity {
             pairingPreferences = PairingStore.getPreferences(this);
             if (!TextUtils.isEmpty(pairingPreferences.getString(PairingStore.KEY_BUSINESS_ID, null))) {
                 showConnectedState();
-                updateMonitoringState();
-                return;
+            } else {
+                showPairingState();
             }
-            showPairingState();
         } catch (GeneralSecurityException | IOException e) {
             Log.e(TAG, "Unable to open encrypted pairing storage", e);
             showPairingState();
             showPairingError(getString(R.string.pairing_error_response));
+        }
+
+        if (!hasCallPermissions()) {
+            requestCallPermissions();
         }
     }
 
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     requestCallPermissions();
                 });
             } catch (CallbacklyApi.PairingRejectedException e) {
-                Log.w(TAG, "Pairing rejected with HTTP " + e.getStatusCode());
+                Log.w(TAG, "Pairing request rejected by server", e);
                 runOnUiThread(() -> showPairingFailure(getString(R.string.pairing_error_server)));
             } catch (JSONException e) {
                 Log.e(TAG, "Pairing response could not be parsed", e);
