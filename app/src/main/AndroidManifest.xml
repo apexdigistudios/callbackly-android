@@ -86,7 +86,7 @@
         </service>
 
         <receiver
-            android:name=".BootCompletedReceiver"
+            android:name=".BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

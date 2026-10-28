@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
@@ -40,6 +41,17 @@ public class CallForegroundService extends Service {
     public void onDestroy() {
         AppLogger.getInstance().info("Call watching has stopped.");
         super.onDestroy();
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        AppLogger.getInstance().info("App closed. Keeping call watching on.");
+        Intent restartIntent = new Intent(getApplicationContext(), CallForegroundService.class);
+        ComponentName serviceName = startService(restartIntent);
+        if (serviceName == null) {
+            AppLogger.getInstance().error("Call watching couldn't restart. Please open the app.");
+        }
+        super.onTaskRemoved(rootIntent);
     }
 
     private void createNotificationChannel() {
