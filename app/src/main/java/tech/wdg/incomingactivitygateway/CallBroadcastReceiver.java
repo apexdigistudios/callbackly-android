@@ -41,7 +41,7 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
                 || ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)
                         != PackageManager.PERMISSION_GRANTED) {
             AppLogger.getInstance().error(
-                    "Call logging blocked: Required Phone or Call Log permissions are disabled.");
+                        "Call logging is off. Turn on Phone and Call Log permissions in the app.");
             return;
         }
 
@@ -52,8 +52,7 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
             long startedAt = preferences.getLong(KEY_CALL_STARTED_AT, 0L);
             if (!preferences.getBoolean(KEY_CALL_ACTIVE, false) || startedAt == 0L) {
                 String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                AppLogger.getInstance().info("Incoming call detected: "
-                        + (TextUtils.isEmpty(phoneNumber) ? "number unavailable" : phoneNumber));
+                AppLogger.getInstance().info("Incoming call. Waiting to see if it's missed.");
                 preferences.edit()
                         .putBoolean(KEY_CALL_ACTIVE, true)
                         .putBoolean(KEY_CALL_ANSWERED, false)
@@ -63,7 +62,7 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state)) {
             if (preferences.getBoolean(KEY_CALL_ACTIVE, false)) {
-                AppLogger.getInstance().info("Incoming call was answered");
+                AppLogger.getInstance().info("You answered the call. Nothing to send.");
                 preferences.edit().putBoolean(KEY_CALL_ANSWERED, true).apply();
             }
         } else if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
@@ -88,12 +87,12 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
 
         if (answered || startedAt == 0L) {
             if (answered) {
-                AppLogger.getInstance().info("Answered call ended; no missed-call webhook needed");
+                AppLogger.getInstance().info("Call ended. No missed call to send.");
             }
             return;
         }
 
-        AppLogger.getInstance().info("Missed call detected; scheduling webhook delivery");
+        AppLogger.getInstance().info("Incoming call missed! Sending to your dashboard...");
         Data inputData = new Data.Builder()
                 .putLong(KEY_CALL_STARTED_AT, startedAt)
                 .putString(KEY_PHONE_NUMBER, phoneNumber)
@@ -115,7 +114,7 @@ public class CallBroadcastReceiver extends BroadcastReceiver {
                     request);
         } catch (IllegalStateException e) {
             Log.e(TAG, "Unable to schedule missed-call delivery", e);
-            AppLogger.getInstance().error("Could not schedule missed-call delivery: " + e.getMessage());
+            AppLogger.getInstance().error("We couldn't send the missed call. Please try again later.");
         }
     }
 }

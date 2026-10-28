@@ -22,7 +22,7 @@ public class CallForegroundService extends Service {
         super.onCreate();
         createNotificationChannel();
         startForeground(NOTIFICATION_ID, createNotification());
-        AppLogger.getInstance().success("Background call monitoring service is active");
+        AppLogger.getInstance().success("Your phone is ready to watch for missed calls.");
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CallForegroundService extends Service {
 
     @Override
     public void onDestroy() {
-        AppLogger.getInstance().info("Background call monitoring service stopped");
+        AppLogger.getInstance().info("Call watching has stopped.");
         super.onDestroy();
     }
 

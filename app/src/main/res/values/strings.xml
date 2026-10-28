@@ -29,6 +29,10 @@
     <string name="log_description">Recent call events and webhook delivery status</string>
     <string name="log_empty">No activity yet. Incoming call and delivery updates will appear here.</string>
     <string name="clear_logs">Clear logs</string>
+    <string name="lead_notification_channel">New missed-call leads</string>
+    <string name="lead_notification_channel_description">Alerts when a missed call is sent to your dashboard</string>
+    <string name="lead_notification_title">New Lead Captured!</string>
+    <string name="lead_notification_body">Missed call detected, lead captured to dashboard, Follow up now</string>
     <string name="brand_wordmark">CallBackly</string>
     <string name="permission_needed">Set permission to access SMS to use this app.</string>
     <string name="input_phone">66123456789</string>

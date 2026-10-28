@@ -184,12 +184,15 @@ public class MainActivity extends AppCompatActivity {
                 });
             } catch (CallbacklyApi.PairingRejectedException e) {
                 Log.w(TAG, "Pairing request rejected by server", e);
+                AppLogger.getInstance().error("Phone unlinked. Please re-pair in the app.");
                 runOnUiThread(() -> showPairingFailure(getString(R.string.pairing_error_server)));
             } catch (JSONException e) {
                 Log.e(TAG, "Pairing response could not be parsed", e);
+                AppLogger.getInstance().error("We couldn't read the server's reply. Please try again.");
                 runOnUiThread(() -> showPairingFailure(getString(R.string.pairing_error_response)));
             } catch (IOException e) {
                 Log.e(TAG, "Pairing request failed", e);
+                AppLogger.getInstance().error("No internet connection. Please try pairing again.");
                 runOnUiThread(() -> showPairingFailure(getString(R.string.pairing_error_network)));
             }
         });
@@ -282,11 +285,10 @@ public class MainActivity extends AppCompatActivity {
                     this,
                     new Intent(this, CallForegroundService.class));
             AppLogger.getInstance().success("Call monitoring is active");
-            AppLogger.getInstance().success("Background call-monitoring notification started");
+            AppLogger.getInstance().success("Your phone is ready to watch for missed calls.");
         } catch (RuntimeException e) {
             Log.e(TAG, "Unable to start the CallBackly background service", e);
-            AppLogger.getInstance().error("Unable to start a background monitoring service: "
-                    + e.getMessage());
+            AppLogger.getInstance().error("We couldn't start call watching. Please reopen the app.");
             statusDescription.setText(R.string.service_start_error);
         }
     }
